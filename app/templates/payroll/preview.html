@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Payroll preview · Payroll Manager{% endblock %}
+{% block content %}
+<div class="panel"><p class="eyebrow">REVIEW BEFORE SAVE</p><h1 class="h3">Payroll preview</h1><p>{{ result.employee.name }} · {{ '%02d'|format(month) }}/{{ year }}</p>
+<div class="table-responsive"><table class="table"><tbody>
+<tr><th>Basic salary</th><td>{{ result.basic }}</td></tr><tr><th>Allowances</th><td>{{ result.allowances }}</td></tr><tr><th>Overtime pay</th><td>{{ result.overtime_pay }}</td></tr><tr><th>Bonus</th><td>{{ result.bonus }}</td></tr><tr class="table-light"><th>Gross salary</th><td>{{ result.gross }}</td></tr>
+{% for item in result.deductions %}<tr><th>{{ item.tax.tax_type }}</th><td>- {{ item.amount }}</td></tr>{% endfor %}
+<tr><th>Total deductions</th><td>{{ result.total_deductions }}</td></tr><tr class="table-primary"><th>Net salary</th><td class="fw-bold">{{ result.net }}</td></tr>
+</tbody></table></div>
+<form method="post" action="{{ url_for('payroll.confirm') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="employee_id" value="{{ result.employee.employee_id }}"><input type="hidden" name="month" value="{{ month }}"><input type="hidden" name="year" value="{{ year }}"><input type="hidden" name="bonus" value="{{ bonus }}"><button class="btn btn-primary">Create pending payroll</button><a class="btn btn-link" href="{{ url_for('payroll.generate') }}">Back</a></form></div>
+{% endblock %}

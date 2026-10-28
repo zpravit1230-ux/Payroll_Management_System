@@ -1,0 +1,19 @@
+<nav class="nav flex-column app-nav">
+  <a class="nav-link" href="{{ url_for('dashboard.index') }}">Dashboard</a>
+  {% if current_user.role in ['ADMIN', 'HR', 'PAYROLL_OFFICER'] %}
+  <a class="nav-link" href="{{ url_for('employees.list_employees') }}">Employees</a>
+  <a class="nav-link" href="{{ url_for('departments.list_departments') }}">Departments</a>
+  {% endif %}
+  <a class="nav-link" href="{{ url_for('attendance.list_attendance') }}">Attendance</a>
+  <a class="nav-link" href="{{ url_for('payroll.list_payroll') }}">Payroll</a>
+  {% if current_user.role in ['ADMIN', 'PAYROLL_OFFICER'] %}
+  <a class="nav-link" href="{{ url_for('taxes.list_taxes') }}">Deductions</a>
+  <a class="nav-link" href="{{ url_for('reports.index') }}">Reports</a>
+  {% endif %}
+  {% if current_user.role == 'ADMIN' %}
+  <a class="nav-link" href="{{ url_for('users.index') }}">User accounts</a>
+  <a class="nav-link" href="{{ url_for('reports.audit_logs') }}">Audit log</a>
+  <a class="nav-link" href="{{ url_for('departments.add') }}">Add department</a>
+  {% endif %}
+  <form class="d-lg-none px-3 mt-3" action="{{ url_for('auth.logout') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-outline-light w-100">Sign out</button></form>
+</nav>

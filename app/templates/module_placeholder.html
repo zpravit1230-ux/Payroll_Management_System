@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Payroll Manager{% endblock %}
+{% block content %}
+<div class="panel">
+  <p class="eyebrow">{{ section|default('WORKSPACE') }}</p>
+  <h1 class="h3">{{ title }}</h1>
+  <p class="text-secondary">{{ message|default('This section is ready for your records.') }}</p>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Generate payroll · Payroll Manager{% endblock %}
+{% block content %}
+<div class="panel form-panel"><a href="{{ url_for('payroll.list_payroll') }}">← Payroll</a><h1 class="h3 mt-3">Generate payroll preview</h1><p class="text-secondary">Review calculations before creating a pending payroll record.</p>
+<form method="post" novalidate>{% include "partials/form_fields.html" %}{{ form.submit(class="btn btn-primary") }}</form></div>
+{% endblock %}

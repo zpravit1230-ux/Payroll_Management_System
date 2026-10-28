@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Departments · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><p class="eyebrow mb-1">ORGANIZATION</p><h1 class="h3">Departments</h1></div>{% if current_user.role=='ADMIN' %}<a class="btn btn-primary" href="{{ url_for('departments.add') }}">Add department</a>{% endif %}</div>
+<form class="mb-3" method="get"><div class="input-group"><input class="form-control" name="q" value="{{ search }}" placeholder="Search departments"><button class="btn btn-outline-secondary">Search</button></div></form>
+<div class="panel table-responsive"><table class="table align-middle"><thead><tr><th>Department</th><th>Employees</th><th></th></tr></thead><tbody>
+{% for department in departments %}<tr><td><a href="{{ url_for('departments.detail', department_id=department.department_id) }}">{{ department.department_name }}</a></td><td>{{ department.employees|length }}</td><td class="text-end">{% if current_user.role=='ADMIN' %}<a class="btn btn-sm btn-outline-primary" href="{{ url_for('departments.edit', department_id=department.department_id) }}">Edit</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="3" class="empty-state">No departments found.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

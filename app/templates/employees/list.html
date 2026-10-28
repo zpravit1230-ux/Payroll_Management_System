@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Employees · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><p class="eyebrow mb-1">PEOPLE</p><h1 class="h3">Employees</h1></div>{% if current_user.role in ['ADMIN','HR'] %}<a class="btn btn-primary" href="{{ url_for('employees.add') }}">Add employee</a>{% endif %}</div>
+<form class="panel mb-3 row g-2 align-items-end" method="get">
+<div class="col-md-4"><label class="form-label">Search</label><input class="form-control" name="q" value="{{ search }}" placeholder="Name, email or ID"></div>
+<div class="col-md-3"><label class="form-label">Department</label><select class="form-select" name="department_id"><option value="">All departments</option>{% for d in departments %}<option value="{{ d.department_id }}" {% if department_id==d.department_id %}selected{% endif %}>{{ d.department_name }}</option>{% endfor %}</select></div>
+<div class="col-md-3"><label class="form-label">Status</label><select class="form-select" name="status"><option value="">All</option><option value="ACTIVE" {% if status=='ACTIVE' %}selected{% endif %}>Active</option><option value="INACTIVE" {% if status=='INACTIVE' %}selected{% endif %}>Inactive</option></select></div>
+<div class="col-md-2"><button class="btn btn-outline-primary w-100">Filter</button></div></form>
+<div class="panel table-responsive"><table class="table align-middle"><thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Designation</th><th>Status</th><th></th></tr></thead><tbody>
+{% for employee in page.items %}<tr><td>{{ employee.employee_id }}</td><td><a href="{{ url_for('employees.detail', employee_id=employee.employee_id) }}">{{ employee.name }}</a><small class="d-block text-secondary">{{ employee.email }}</small></td><td>{{ employee.department.department_name if employee.department else '—' }}</td><td>{{ employee.designation }}</td><td><span class="badge text-bg-{{ 'success' if employee.employment_status=='ACTIVE' else 'secondary' }}">{{ employee.employment_status }}</span></td><td class="text-end">{% if current_user.role in ['ADMIN','HR'] %}<a class="btn btn-sm btn-outline-primary" href="{{ url_for('employees.edit', employee_id=employee.employee_id) }}">Edit</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="6" class="empty-state">No employees match these filters.</td></tr>{% endfor %}
+</tbody></table>
+{% if page.pages>1 %}<nav aria-label="Employee pages"><ul class="pagination">{% for n in page.iter_pages() %}{% if n %}<li class="page-item {% if n==page.page %}active{% endif %}"><a class="page-link" href="{{ url_for('employees.list_employees', page=n, q=search, department_id=department_id, status=status) }}">{{ n }}</a></li>{% else %}<li class="page-item disabled"><span class="page-link">…</span></li>{% endif %}{% endfor %}</ul></nav>{% endif %}
+</div>
+{% endblock %}

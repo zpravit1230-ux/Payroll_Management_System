@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Payroll Manager{% endblock %}
+{% block guest_content %}
+<div class="login-card">
+  <div class="brand-mark">PM</div>
+  <p class="eyebrow">PAYROLL MANAGEMENT</p>
+  <h1>Welcome back</h1>
+  <p class="text-secondary mb-4">Sign in to continue to your workspace.</p>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.username.label(class="form-label") }}{{ form.username(class="form-control form-control-lg", autocomplete="username") }}{% for error in form.username.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>
+    <div class="mb-3">{{ form.password.label(class="form-label") }}{{ form.password(class="form-control form-control-lg", autocomplete="current-password") }}{% for error in form.password.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>
+    <div class="form-check mb-4">{{ form.remember(class="form-check-input") }}{{ form.remember.label(class="form-check-label") }}</div>
+    {{ form.submit(class="btn btn-primary btn-lg w-100") }}
+  </form>
+</div>
+{% endblock %}

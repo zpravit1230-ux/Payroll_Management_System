@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Deduction rules · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><p class="eyebrow mb-1">CONFIGURATION</p><h1 class="h3">Deduction rules</h1></div>{% if current_user.role=='ADMIN' %}<a class="btn btn-primary" href="{{ url_for('taxes.add') }}">Add rule</a>{% endif %}</div>
+<div class="panel table-responsive"><table class="table align-middle"><thead><tr><th>Name</th><th>Method</th><th>Effective</th><th>Status</th><th></th></tr></thead><tbody>{% for tax in taxes %}<tr><td>{{ tax.tax_type }}<small class="d-block text-secondary">{{ tax.description or '' }}</small></td><td>{{ tax.tax_rate|string + '%' if tax.tax_rate is not none else tax.fixed_amount|string + ' fixed' }}</td><td>{{ tax.effective_from }} — {{ tax.effective_to or 'Open' }}</td><td>{{ 'Active' if tax.is_active else 'Inactive' }}</td><td class="text-end">{% if current_user.role=='ADMIN' %}<a class="btn btn-sm btn-outline-primary" href="{{ url_for('taxes.edit', tax_id=tax.tax_id) }}">Edit</a>{% endif %}</td></tr>{% else %}<tr><td colspan="5" class="empty-state">No deduction rules configured.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

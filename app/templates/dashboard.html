@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+  <div><p class="eyebrow mb-1">OVERVIEW</p><h1 class="h3 mb-0">Dashboard</h1></div>
+  <form class="d-flex gap-2" method="get">
+    <select class="form-select" name="month" aria-label="Month">{% for m in range(1,13) %}<option value="{{ m }}" {% if month==m %}selected{% endif %}>{{ m }}</option>{% endfor %}</select>
+    <input class="form-control" type="number" name="year" value="{{ year }}" min="2000" max="2200" aria-label="Year">
+    <button class="btn btn-outline-primary">Apply</button>
+  </form>
+</div>
+<div class="row g-3 mb-4">
+  {% for label,value,icon in [
+    ('Total employees',total_count,'TE'),('Active employees',active_count,'PE'),
+    ('Departments',department_count,'DP'),
+    ('Present today',present_today,'AT'),('On leave today',leave_today,'LV'),
+    ('Gross payroll',gross_total,'GP'),('Net payroll',net_total,'NP'),
+    ('Pending approvals',pending_approvals,'PA')
+  ] %}
+  <div class="col-12 col-sm-6 col-xl-3"><div class="stat-card"><span class="stat-icon">{{ icon }}</span><div><div class="stat-value">{{ value if icon not in ['GP','NP'] else '{:,.2f}'.format(value) }}</div><div class="stat-label">{{ label }}</div></div></div></div>
+  {% endfor %}
+</div>
+<div class="row g-3">
+  <div class="col-xl-7"><div class="panel"><h2 class="h6">Monthly payroll · {{ year }}</h2><canvas id="payrollChart" height="120"></canvas></div></div>
+  <div class="col-xl-5"><div class="panel"><h2 class="h6">Employees by department</h2><canvas id="departmentChart" height="180"></canvas></div></div>
+  <div class="col-xl-7"><div class="panel"><h2 class="h6">Attendance · recent 14 days</h2><canvas id="attendanceChart" height="120"></canvas></div></div>
+  {% if current_user.role != 'HR' %}
+  <div class="col-xl-5"><div class="panel"><h2 class="h6">Payroll status · selected period</h2><canvas id="paymentStatusChart" height="180"></canvas></div></div>
+  {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const payrollCtx = document.getElementById('payrollChart');
+new Chart(payrollCtx, {type:'bar',data:{labels:{{ payroll_months|tojson }},datasets:[
+{label:'Gross',data:{{ payroll_gross|tojson }},backgroundColor:'#4e79e8'},
+{label:'Deductions',data:{{ payroll_deductions|tojson }},backgroundColor:'#f2a65a'}]},
+options:{responsive:true,scales:{y:{beginAtZero:true}}}});
+new Chart(document.getElementById('departmentChart'), {type:'doughnut',data:{
+labels:{{ department_labels|tojson }},datasets:[{data:{{ department_values|tojson }},backgroundColor:['#4e79e8','#42b883','#f2a65a','#9575cd','#ec6b78']}]},
+options:{responsive:true}});
+new Chart(document.getElementById('attendanceChart'), {type:'line',data:{
+labels:{{ attendance_dates|tojson }},datasets:[
+{label:'Present',data:{{ attendance_present|tojson }},borderColor:'#42b883',tension:.25},
+{label:'Half day',data:{{ attendance_half_days|tojson }},borderColor:'#f2a65a',tension:.25}]},
+options:{responsive:true,scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+{% if current_user.role != 'HR' %}
+new Chart(document.getElementById('paymentStatusChart'), {type:'doughnut',data:{
+labels:{{ payment_status_labels|tojson }},datasets:[{data:{{ payment_status_values|tojson }},backgroundColor:['#f2a65a','#4e79e8','#42b883']}]},
+options:{responsive:true}});
+{% endif %}
+</script>
+{% endblock %}

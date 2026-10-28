@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Payroll record · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><p class="eyebrow mb-1">PAYROLL RECORD #{{ payroll.payroll_id }}</p><h1 class="h3">{{ payroll.employee.name }} · {{ '%02d'|format(payroll.payroll_month) }}/{{ payroll.payroll_year }}</h1></div><a class="btn btn-outline-primary" href="{{ url_for('payroll.salary_slip', payroll_id=payroll.payroll_id) }}">Download salary slip</a></div>
+<div class="panel"><div class="table-responsive"><table class="table"><tbody>
+<tr><th>Basic salary</th><td>{{ payroll.basic_salary }}</td></tr><tr><th>Allowances</th><td>{{ payroll.allowances }}</td></tr><tr><th>Overtime pay</th><td>{{ payroll.overtime_pay }}</td></tr><tr><th>Bonus</th><td>{{ payroll.bonus }}</td></tr><tr><th>Gross</th><td>{{ payroll.gross_salary }}</td></tr>
+{% for item in payroll.payroll_taxes %}<tr><th>{{ item.tax_type_snapshot }}</th><td>- {{ item.tax_amount }}</td></tr>{% endfor %}
+<tr><th>Total deductions</th><td>{{ payroll.total_deductions }}</td></tr><tr><th>Net salary</th><td class="fw-bold">{{ payroll.net_salary }}</td></tr><tr><th>Status</th><td>{{ payroll.payment_status }}</td></tr><tr><th>Payment date</th><td>{{ payroll.payment_date or '—' }}</td></tr>
+</tbody></table></div>
+{% if current_user.role in ['ADMIN','PAYROLL_OFFICER'] %}{% if payroll.payment_status=='PENDING' %}<form class="d-inline" method="post" action="{{ url_for('payroll.approve', payroll_id=payroll.payroll_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-primary">Approve payroll</button></form>{% elif payroll.payment_status=='APPROVED' %}<form method="post" action="{{ url_for('payroll.mark_paid', payroll_id=payroll.payroll_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-success">Record payment</button></form>{% endif %}{% endif %}
+</div>
+{% endblock %}

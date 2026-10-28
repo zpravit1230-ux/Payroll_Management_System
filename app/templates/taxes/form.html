@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Payroll Manager{% endblock %}
+{% block content %}
+<div class="panel form-panel"><a href="{{ url_for('taxes.list_taxes') }}">← Deduction rules</a><h1 class="h3 mt-3">{{ title }}</h1>
+<form method="post" novalidate>{% include "partials/form_fields.html" %}{{ form.submit(class="btn btn-primary") }}</form></div>
+{% endblock %}

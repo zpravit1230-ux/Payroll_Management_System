@@ -1,0 +1,3 @@
+-- SQLAlchemy models plus Flask-Migrate are the authoritative schema source.
+-- Use the migration workflow documented in README.md. This file intentionally
+-- does not contain a second hand-maintained schema that could drift.

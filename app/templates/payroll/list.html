@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Payroll · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><p class="eyebrow mb-1">COMPENSATION</p><h1 class="h3">Payroll</h1></div>{% if current_user.role in ['ADMIN','PAYROLL_OFFICER'] %}<a class="btn btn-primary" href="{{ url_for('payroll.generate') }}">Generate payroll</a>{% endif %}</div>
+<div class="panel table-responsive"><table class="table align-middle"><thead><tr><th>Employee</th><th>Period</th><th>Gross</th><th>Deductions</th><th>Net</th><th>Status</th><th></th></tr></thead><tbody>{% for p in records %}<tr><td>{{ p.employee.name }}</td><td>{{ '%02d'|format(p.payroll_month) }}/{{ p.payroll_year }}</td><td>{{ p.gross_salary }}</td><td>{{ p.total_deductions }}</td><td class="fw-semibold">{{ p.net_salary }}</td><td><span class="badge text-bg-{{ 'success' if p.payment_status=='PAID' else 'warning' if p.payment_status=='PENDING' else 'primary' }}">{{ p.payment_status }}</span></td><td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('payroll.detail', payroll_id=p.payroll_id) }}">View</a></td></tr>{% else %}<tr><td colspan="7" class="empty-state">No payroll records yet.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

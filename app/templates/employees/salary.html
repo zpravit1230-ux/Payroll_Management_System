@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Salary structure · Payroll Manager{% endblock %}
+{% block content %}
+<div class="panel form-panel"><a href="{{ url_for('employees.detail', employee_id=employee.employee_id) }}">← {{ employee.name }}</a><h1 class="h3 mt-3">Add salary structure</h1><p class="text-secondary">Previous salary records are preserved when a new structure takes effect.</p>
+<form method="post" novalidate>{% include "partials/form_fields.html" %}{{ form.submit(class="btn btn-primary") }}</form></div>
+{% endblock %}

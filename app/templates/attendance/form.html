@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Payroll Manager{% endblock %}
+{% block content %}
+<div class="panel form-panel"><a href="{{ url_for('attendance.list_attendance') }}">← Attendance</a><h1 class="h3 mt-3">{{ title }}</h1><p class="text-secondary">Enter check-in and check-out on the same day. Working hours are calculated automatically.</p>
+<form method="post" novalidate>{% include "partials/form_fields.html" %}{{ form.submit(class="btn btn-primary") }}</form></div>
+{% endblock %}

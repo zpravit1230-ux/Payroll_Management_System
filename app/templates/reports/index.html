@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Reports · Payroll Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div><p class="eyebrow mb-1">ANALYTICS</p><h1 class="h3">{{ report_types[report_type] }}</h1></div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary" href="{{ url_for('reports.report_csv', report=report_type, month=month, year=year, department_id=department_id, employee_id=employee_id, status=status) }}">Export CSV</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('reports.report_pdf', report=report_type, month=month, year=year, department_id=department_id, employee_id=employee_id, status=status) }}">Export PDF</a>
+  </div>
+</div>
+<form class="panel row g-2 align-items-end mb-3" method="get">
+  <div class="col-sm-3"><label class="form-label">Report</label><select class="form-select" name="report">{% for key,label in report_types.items() %}<option value="{{ key }}" {% if report_type==key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+  <div class="col-sm-2"><label class="form-label">Month</label><input class="form-control" type="number" name="month" min="1" max="12" value="{{ month }}"></div>
+  <div class="col-sm-2"><label class="form-label">Year</label><input class="form-control" type="number" name="year" min="2000" max="2200" value="{{ year }}"></div>
+  <div class="col-sm-2"><label class="form-label">Department</label><select class="form-select" name="department_id"><option value="">All</option>{% for d in departments %}<option value="{{ d.department_id }}" {% if department_id|string==d.department_id|string %}selected{% endif %}>{{ d.department_name }}</option>{% endfor %}</select></div>
+  <div class="col-sm-2"><label class="form-label">Employee</label><select class="form-select" name="employee_id"><option value="">All</option>{% for e in employees %}<option value="{{ e.employee_id }}" {% if employee_id|string==e.employee_id|string %}selected{% endif %}>{{ e.name }}</option>{% endfor %}</select></div>
+  <div class="col-sm-1"><button class="btn btn-primary w-100">Apply</button></div>
+  <div class="col-sm-3"><label class="form-label">Payroll status</label><select class="form-select" name="status"><option value="">All</option>{% for s in ['PENDING','APPROVED','PAID'] %}<option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+</form>
+{% if totals %}
+<div class="row g-3 mb-3">
+  {% if totals.gross is defined %}
+  <div class="col-sm-4"><div class="stat-card"><div><div class="stat-value">{{ '%.2f'|format(totals.gross) }}</div><div class="stat-label">Gross total</div></div></div></div>
+  <div class="col-sm-4"><div class="stat-card"><div><div class="stat-value">{{ '%.2f'|format(totals.deductions) }}</div><div class="stat-label">Deductions total</div></div></div></div>
+  <div class="col-sm-4"><div class="stat-card"><div><div class="stat-value">{{ '%.2f'|format(totals.net) }}</div><div class="stat-label">Net total</div></div></div></div>
+  {% else %}
+  <div class="col-sm-4"><div class="stat-card"><div><div class="stat-value">{{ '%.2f'|format(totals.amount) }}</div><div class="stat-label">Deduction total</div></div></div></div>
+  {% endif %}
+</div>
+{% endif %}
+<div class="panel table-responsive"><table class="table align-middle">
+  <thead><tr>{% for header in headers %}<th>{{ header }}</th>{% endfor %}</tr></thead>
+  <tbody>{% for row in rows %}<tr>{% for value in row %}<td>{{ value }}</td>{% endfor %}</tr>
+  {% else %}<tr><td colspan="{{ headers|length }}" class="empty-state">No records match the selected filters.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

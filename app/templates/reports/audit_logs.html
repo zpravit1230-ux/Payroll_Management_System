@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Audit log · Payroll Manager{% endblock %}
+{% block content %}
+<div class="mb-3"><p class="eyebrow mb-1">ADMINISTRATION</p><h1 class="h3">Audit log</h1></div>
+<div class="panel table-responsive"><table class="table align-middle">
+<thead><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Entity</th><th>Record</th><th>Details</th></tr></thead>
+<tbody>{% for entry in logs %}<tr>
+<td>{{ entry.created_at }}</td><td>{{ entry.user.username if entry.user else 'System' }}</td>
+<td>{{ entry.action }}</td><td>{{ entry.entity_type }}</td><td>{{ entry.entity_id or '—' }}</td>
+<td>{{ entry.details or '—' }}</td>
+</tr>{% else %}<tr><td colspan="6" class="empty-state">No audit entries found.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}
