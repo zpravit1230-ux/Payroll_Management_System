@@ -21,6 +21,17 @@ and adjustment/reversal workflows are not implemented.
 SQLite is supported for isolated local tests and can be used for a quick
 single-user evaluation, but MySQL is the documented application database.
 
+## CodeSandbox preview
+
+Open the repository in CodeSandbox using
+<https://codesandbox.io/p/sandbox/github/zpravit1230-ux/payroll_management_system>.
+The CodeSandbox task installs the Python dependencies, applies the migrations to
+the default local SQLite database, and starts the Flask server on port 5000 for
+the browser preview. The initial preview is the login page; no demo or
+administrator account is created automatically. To access the application,
+create an administrator from the CodeSandbox terminal with
+`python scripts/create_admin.py`.
+
 ## Windows PowerShell setup
 
 1. Install Python and MySQL Server. Create a database and a least-privileged

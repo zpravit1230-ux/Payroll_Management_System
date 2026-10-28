@@ -1,0 +1,19 @@
+{
+  "$schema": "https://codesandbox.io/schemas/tasks.json",
+  "setupTasks": [
+    {
+      "name": "Install Python dependencies",
+      "command": "python -m pip install -r requirements.txt"
+    }
+  ],
+  "tasks": {
+    "start": {
+      "name": "Start payroll app",
+      "command": "flask --app run.py db upgrade && flask --app run.py run --host=0.0.0.0 --port=5000",
+      "runAtStart": true,
+      "preview": {
+        "port": 5000
+      }
+    }
+  }
+}
